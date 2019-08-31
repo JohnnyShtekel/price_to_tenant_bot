@@ -7,15 +7,11 @@ from consts import MENU_MESSAGE, HEADERS
 from mehir_api_client import MehirLameshtakenApi
 
 bot = telebot.TeleBot("855617392:AAFpE8qd-SIwN5cLRbfMWsQIAxn80Df3KAI")
-
 markup = types.ReplyKeyboardRemove(selective=False)
-
 misteken_cls = MehirLameshtakenApi()
 misteken_cls.fetch_query()
 results = misteken_cls.get_results()
-
 results_df = pd.DataFrame(results)
-
 all_cites = results_df["יישוב"].unique()
 all_permits = results_df["מצב היתר"].unique()
 all_neighborhoods = results_df["שכונה"].unique()
@@ -28,10 +24,6 @@ def send_welcome(message):
                      reply_markup=markup)
     bot.send_message(message.chat.id, MENU_MESSAGE, reply_markup=markup)
 
-
-@bot.message_handler(commands=['about'])
-def send_about(message):
-    bot.send_document(message.chat.id, "Please refer to my description to know about me", reply_markup=markup)
 
 def create_menu(message, message_list, menu_list):
     markup_menu = types.ReplyKeyboardMarkup(row_width=8)
@@ -59,14 +51,13 @@ def handle_menu_repaly(msg, key):
 
                 index = 0
 
-            index +=1
+            index += 1
             bot.send_message(msg.chat.id, output_string, reply_markup=markup)
     else:
         bot.send_message(msg.chat.id, "סורי אין לי כרגע תוצאות על חיפוש זה", reply_markup=markup)
 
 
-
-#------------------------------------projects status---------------------------------------------------
+# ------------------------------------projects status---------------------------------------------------
 @bot.message_handler(func=lambda msg: msg.text in project_status)
 def get_project_status_info(msg):
     key = "מצב פרויקט"
@@ -82,8 +73,7 @@ def show_project_status_menu(message):
     )
 
 
-
-#-------------------------------------neighborhoods---------------------------------------------------
+# -------------------------------------neighborhoods---------------------------------------------------
 @bot.message_handler(func=lambda msg: msg.text in all_neighborhoods)
 def get_neighborhoods_info(msg):
     key = "שכונה"
@@ -98,7 +88,8 @@ def show_neighborhoods_menu(message):
         all_neighborhoods
     )
 
-#-------------------------------------PERMITS---------------------------------------------------
+
+# -------------------------------------PERMITS---------------------------------------------------
 @bot.message_handler(func=lambda msg: msg.text in all_permits)
 def get_permits_info(msg):
     key = "מצב היתר"
@@ -112,11 +103,14 @@ def show_permit_menu(message):
         ["עכשיו יוצגו בפניך את כל סוגי מצב היתר", "בחר מצב היתר בבקשה"],
         all_permits
     )
-#-------------------------------------CITYS---------------------------------------------------
+
+
+# -------------------------------------CITYS---------------------------------------------------
 @bot.message_handler(func=lambda msg: msg.text in all_cites)
 def get_city_info(msg):
     key = "יישוב"
     handle_menu_repaly(msg, key)
+
 
 @bot.message_handler(commands=['city'])
 def show_menu(message):
@@ -125,5 +119,6 @@ def show_menu(message):
         ["עכשיו יוצגו בפניך את כל הערים שקיימות כרגע בהגרלות שרלוונטיות", "בחר עיר בבקשה"],
         all_cites
     )
+
 
 bot.polling()
