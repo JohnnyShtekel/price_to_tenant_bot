@@ -1,7 +1,5 @@
 # # -*- coding: utf-8 -*-
-import json
 import requests
-import pandas as pd
 Q="&q={0}"
 base_url = "https://data.gov.il"
 url_s = 'https://data.gov.il/api/action/datastore_search?resource_id=7c8255d0-49ef-49db-8904-4cf917586031'
@@ -83,15 +81,3 @@ class MehirLameshtakenApi(object):
             filter_value = filter_row["filter_value"]
             self._results = \
                 list(filter(lambda x: x[filter_field] == filter_value, self._results))
-
-
-if __name__ == "__main__":
-    m = MehirLameshtakenApi()
-    m.add_filter({"filter_field": 'יישוב', "filter_value": 'ראשון לציון'})
-    # m.add_filter({"filter_field": 'שם פרויקט', "filter_value": '2016-07-08'})
-    # m.add_filter({"filter_field": 'תאריך ביצוע הגרלה', "filter_value": 'סוג זכאות'})
-    m.fetch_query()
-    result = m.get_results()
-    df = pd.DataFrame(result[:-15])
-    df["יישוב"] = df["יישוב"].apply(lambda x: x == 'לוד')
-    print(len(df.to_dict("records")))
